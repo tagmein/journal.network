@@ -4,7 +4,7 @@
   "build": "esbuild src/index.ts --bundle --resolve-extensions=.ts --outfile=public/app/main.js",
   "kv": "node mock-kv.mjs",
   "serve": "python -m http.server 8123 -d public",
-  "start": "wrangler pages dev public --compatibility-flags='nodejs_compat' --compatibility-date='2023-10-30'"
+  "start": "wrangler pages dev public --compatibility-flags='nodejs_compat' --compatibility-date='2023-12-23'"
  },
  "dependencies": {
   "@tagmein/civil-memory": "^0.0.12",
