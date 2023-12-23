@@ -1,8 +1,7 @@
 import { PagesFunction } from '@cloudflare/workers-types'
 
 interface Env {
- CIVIL_DATA_KV: KVNamespace
- CIVIL_DATA_BUCKET: R2Bucket
+ JOURNAL_NETWORK_DATA_KV: KVNamespace
 }
 
 export type CloudflareWorker =
