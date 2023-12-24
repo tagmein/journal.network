@@ -14,33 +14,37 @@ interface Body {
 
 export const onRequestPost: CloudflareWorker =
  async function ({ env, request }) {
-  const kv = await getKV(env)
-  const body: Body = await request.json()
-
-  const {
-   access_token,
-   expires_at,
-   error,
-   user,
-  } = await createAuth(
-   kv,
-   body.username,
-   body.password,
-   body['create-account']
-  )
-
-  if (error) {
+  try {
+   const kv = await getKV(env)
+   const body: Body = await request.json()
+   const {
+    access_token,
+    expires_at,
+    error,
+    user,
+   } = await createAuth(
+    kv,
+    body.username,
+    body.password,
+    body['create-account']
+   )
+   if (error) {
+    return createResponse(
+     { error },
+     { status: 400 }
+    )
+   }
+   return createResponse({
+    access_token,
+    expires_at,
+    user,
+   })
+  } catch (e) {
    return createResponse(
-    { error },
-    { status: 400 }
+    { error: e.message },
+    { status: 500 }
    )
   }
-
-  return createResponse({
-   access_token,
-   expires_at,
-   user,
-  })
  }
 
 export const onRequestGet: CloudflareWorker =
@@ -58,17 +62,17 @@ export const onRequestGet: CloudflareWorker =
 
   const kv = await getKV(env)
 
-  const {
-   user,
-   session: { expires_at },
-  } = await getUserSession(kv, access_token)
+  const { user, session } =
+   await getUserSession(kv, access_token)
 
-  if (!user) {
+  if (!user || !session) {
    return createResponse(
     { error: 'unauthorized' },
     { status: 401 }
    )
   }
+
+  const { expires_at } = session
 
   return createResponse({
    user,

@@ -22,7 +22,7 @@ Be a part of the transformation of humanity.
 
 ## Local development
 
-You'll need 2 separate terminal windows or tabs to run the development environment.
+You'll need 3 separate terminal windows or tabs to run the development environment.
 
 ### Terminal 1: Wrangler
 
@@ -50,3 +50,30 @@ To watch TypeScript sources and rebuild on change, run:
 ```
 npm run build:watch
 ```
+
+### Terminal 3: Local KV server
+
+In terminal 3, run the kv server, which is needed for local development:
+
+```
+npm run kv
+```
+
+You should see a message like the following:
+
+```
+Server listening on http://localhost:3333
+Available operations:
+
+ • Read value at key
+      GET ?key=urlEncodedKey
+
+ • Delete value at key
+   DELETE ?key=urlEncodedKey
+
+ • Write value at key (expires in 60 seconds)
+     POST ?key=urlEncodedKey&expiration_ttl=60 <body>
+
+```
+
+Now, the development environment is completely ready. Happy coding!

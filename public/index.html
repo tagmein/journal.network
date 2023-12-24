@@ -17,17 +17,23 @@
   form {
    position: relative;
   }
-  form::after {
+  form::after,
+  form::before {
+   animation: move 2s linear infinite;
+   background-size: 22px 22px;
+   bottom: 0;
    content: '';
    display: block;
-   position: absolute;
-   top: 0;
    left: 0;
-   right: 0;
-   bottom: 0;
    opacity: 0;
    pointer-events: none;
-   transition: opacity 0.2s ease;
+   position: absolute;
+   right: 0;
+   top: 0;
+   transition: opacity 2.5s ease;
+   z-index: 1;
+  }
+  form[disabled]::after {
    background: repeating-linear-gradient(
     135deg,
     transparent 0px,
@@ -39,14 +45,17 @@
     #80808080 24px,
     #80808080 32px
    );
-   background-size: 22px 22px;
-  }
-  form[disabled]::after {
+   opacity: 1;
    pointer-events: all;
-   animation: move 2s linear infinite;
+  }
+  form.error::before {
+   background-color: #ff000080;
    opacity: 1;
   }
-
+  form.success::before {
+   background-color: #00ff0080;
+   opacity: 1;
+  }
   @keyframes move {
    from {
     background-position: 0 0;

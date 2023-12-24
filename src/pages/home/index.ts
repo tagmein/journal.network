@@ -75,7 +75,7 @@ export function home(
     'Share your journal with the world'
    const para0 = document.createElement('p')
    para0.textContent =
-    'Journal Network allows anyone to create a journal and share it with others. People can subscribe and recieve updates when you make a new post. Founded 2023.'
+    'Journal Network allows anyone to create a journal and share it with others. People can subscribe and recieve updates when you publish a journal entry. Founded 2023.'
    const para1 = document.createElement('p')
    para1.innerHTML =
     'Find the source code on <a href="https://github.com/tagmein/journal.network" target="_blank">GitHub</a>.'
@@ -100,12 +100,11 @@ export function home(
    const entries = themedColumn({
     style: {
      alignItems: 'center',
-     borderBottom: '1px solid var(--theme2)',
      flexGrow: '0',
      gap: '20px',
      justifyContent: 'space-evenly',
      padding:
-      '0 var(--dimension4) var(--dimension3) ',
+      'var(--dimension4) var(--dimension3)',
     },
     themeFacets: ['document', 'opaque'],
    })

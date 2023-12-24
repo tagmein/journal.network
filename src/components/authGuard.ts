@@ -61,11 +61,21 @@ function createAuthForm(
    )
 
    if ('error' in response) {
+    form.classList.add('error')
+    await new Promise((r) =>
+     setTimeout(r, 2500)
+    )
+    form.classList.remove('error')
     errorMessage.textContent = response.error
     return
    }
 
+   form.classList.add('success')
+   await new Promise((r) => setTimeout(r, 2500))
+
    onUpdate()
+
+   form.classList.remove('success')
   } catch (error) {
    errorMessage.textContent = error.message
   } finally {
@@ -96,13 +106,14 @@ function createAuthForm(
  )
 
  Object.assign(form.style, {
-  alignItems: 'flex-start',
+  alignItems: 'center',
   display: 'flex',
   flexDirection: 'column',
   gap: 'var(--dimension3)',
   margin: 'var(--dimension3) auto',
   maxWidth: '480px',
-  padding: 'var(--dimension4)',
+  padding:
+   'var(--dimension3) var(--dimension4)',
  })
 
  const formTitle = document.createElement('h3')
@@ -170,11 +181,70 @@ function createAuthForm(
   createAccountButton
  )
 
+ const termsHeader =
+  document.createElement('h5')
+
+ termsHeader.textContent = 'Terms of service'
+
+ const termsMessage =
+  document.createElement('p')
+
+ Object.assign(termsMessage.style, {
+  color: 'var(--theme7)',
+  textAlign: 'center',
+  margin: '0',
+ })
+
+ termsMessage.textContent = `
+  Journal Network is a software application available anywhere that
+  internet access exists.
+  By interacting with this application, clicking 'Sign in' or 'Create account',
+  you affirm that you intend to abide by all laws enacted by people anywhere on planet
+  Earth. If your account or content is found to be in violation of
+  any published law anywhere on Earth, as determined by a jury of any
+  3 people, your account or content will be permanently removed without notice.
+  Since Journal Network is hosted on Cloudflare, the Cloudflare Website and Online Services Terms of Use also applies,
+  which may be viewed at https://www.cloudflare.com/website-terms/ 
+ `
+
+ const privacyHeader =
+  document.createElement('h5')
+
+ privacyHeader.textContent = 'Privacy policy'
+
+ const privacyMessage =
+  document.createElement('p')
+
+ Object.assign(privacyMessage.style, {
+  color: 'var(--theme7)',
+  textAlign: 'center',
+  margin: '0',
+ })
+
+ privacyMessage.textContent = `
+  Journal Network stores all possible information we can discern about you as you use the service.
+  We collect IP addresses, contact information, mouse movement and keyboard key press data, and more.
+  If it's technically possible to collect it, we collect it.
+  Since all information entered into Journal Network is broadcast as soon as you publish
+  it, it is not technically possible to erase all copies of published content. Once it's on the internet, it's forever.
+  When using Journal Network, you grant permission to all humans or robots on Earth or in Space to
+  copy your content an infinite number of times and present it as their own work,
+  without crediting you. Your content may be used by anyone, for any purpose, for all time.
+  Since Journal Network is hosted on Cloudflare, the Cloudflare Privacy Policy also applies, which may be viewed at https://www.cloudflare.com/privacypolicy/
+ `
+
+ const agreeHeader =
+  document.createElement('h5')
+
+ agreeHeader.textContent =
+  'I am 18 years of age or older, I agree to the Terms of service, I understand and accept the Privacy policy, and I would now like to:'
+
  const errorMessage =
   document.createElement('p')
 
  Object.assign(errorMessage.style, {
   color: '#f08080',
+  textAlign: 'center',
   margin: '0',
  })
 
@@ -182,6 +252,11 @@ function createAuthForm(
   formTitle,
   usernameInput,
   passwordInput,
+  termsHeader,
+  termsMessage,
+  privacyHeader,
+  privacyMessage,
+  agreeHeader,
   buttonRow,
   errorMessage
  )

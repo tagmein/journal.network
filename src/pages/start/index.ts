@@ -8,27 +8,21 @@ import {
  applyTheme,
  attachThemeVariables,
 } from '@starryui/theme'
-import { renderMarkdownFromPath } from '../markdown'
+import { authGuard } from '../../components/authGuard'
+import { User } from '../../lib/auth'
 
-export function about(
+export function start(
  theme: StarryUITheme
 ): StarryUIPage {
- const themedPage = applyTheme(
-  theme,
-  page
- )
+ const themedPage = applyTheme(theme, page)
  return themedPage({
-  title: 'About',
+  title: 'Start',
   content(container, config) {
    const themedColumn = applyTheme(
     theme,
     column
    )
    const mainArea = themedColumn({
-    style: {
-     padding:
-      'var(--dimension3) var(--dimension4)',
-    },
     themeFacets: ['document', 'opaque'],
    })
    container.appendChild(mainArea)
@@ -39,16 +33,19 @@ export function about(
     theme.variables
    )
 
-   mainArea.textContent = 'loading...' // todo loading component
-
-   async function load() {
-    mainArea.innerHTML =
-     await renderMarkdownFromPath(
-      '/pages/about/content.md'
-     )
-   }
-
-   load().catch((e) => console.warn(e))
+   authGuard(mainArea, theme, (user: User) => {
+    const element =
+     document.createElement('div')
+    element.style.padding = 'var(--dimension4)'
+    element.textContent =
+     'Journals list will be displayed here'
+    return {
+     element,
+     destroy() {
+      element.remove()
+     },
+    }
+   })
 
    config?.startUpTasks?.initial?.push?.(
     function () {

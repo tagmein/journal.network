@@ -4,7 +4,7 @@ import { NORMAL_DELAY_MS } from '@starryui/traits/constants.js'
 import { MainTrayControl } from './main-tray'
 import { about } from './pages/about'
 import { home } from './pages/home'
-import { projects } from './pages/projects'
+import { start } from './pages/start'
 
 export function router(
  topTray: MainTrayControl
@@ -30,10 +30,10 @@ export function router(
     )
    case 'home':
     return home(theme)
-   case 'projects':
+   case 'start':
     return topTray.withBreadcrumb(
      path,
-     projects(theme)
+     start(theme)
     )
    default:
     throw new Error(`Page '${id}' not found`)
@@ -90,7 +90,8 @@ export function router(
      )
      break
     case '#/about':
-    case '#/journals':
+    case '#/directory':
+    case '#/start':
      activePage = getPage(
       location.hash,
       location.hash.substring(2),

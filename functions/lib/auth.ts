@@ -72,7 +72,6 @@ export async function compareFixedTime(
 }
 
 export interface SessionData {
- access_token_hash: string
  created_at: number
  expires_at: number
  username: string
@@ -89,7 +88,16 @@ export interface UserData {
 export async function getUserSession(
  kv: CivilMemoryKV,
  access_token: string
-) {
+): Promise<
+ | {
+    session: SessionData
+    user: User
+   }
+ | {
+    session: null
+    user: null
+   }
+> {
  const sessionKey = `${authNamespace}#sessions/${access_token}`
  const sessionString = await kv.get(sessionKey)
  const session = sessionString
@@ -97,7 +105,10 @@ export async function getUserSession(
   : undefined
 
  if (!session) {
-  return {}
+  return {
+   session: null,
+   user: null,
+  }
  }
 
  const userKey = `${authNamespace}#user-accounts/${session.username.toLowerCase()}`
@@ -107,7 +118,10 @@ export async function getUserSession(
   : undefined
 
  if (!user) {
-  return {}
+  return {
+   session: null,
+   user: null,
+  }
  }
 
  return {
@@ -122,29 +136,25 @@ export async function createAccessTokenForUser(
  expiration_ttl = TIME_ONE_DAY
 ) {
  const access_token = createAccessToken()
- const accessTokenHash = hash(
-  access_token,
-  user.password_hash_salt
- )
-
  const created_at = Date.now()
-
  const expires_at = created_at + expiration_ttl
 
  const session: SessionData = {
-  access_token_hash: accessTokenHash,
   created_at,
   expires_at,
   username: user.username,
  }
 
- const sessionKey = `${authNamespace}#sessions/${accessTokenHash}`
+ const sessionKey = `${authNamespace}#sessions/${access_token}`
  await kv.set(
   sessionKey,
   JSON.stringify(session)
  )
 
- return { access_token, expires_at }
+ return {
+  access_token: `${access_token}`,
+  expires_at,
+ }
 }
 
 export async function createAuth(
@@ -158,6 +168,12 @@ export async function createAuth(
  } catch (e) {
   return { error: e.message }
  }
+ if (password.length < 12) {
+  return {
+   error:
+    'Password must be at least 12 characters',
+  }
+ }
  const username = _username.toLowerCase()
  const userKey = `${authNamespace}#user-accounts/${username}`
  const userString = await kv.get(userKey)
@@ -168,22 +184,20 @@ export async function createAuth(
  if (user) {
   const { password_hash, password_hash_salt } =
    user
-  if (
-   !(await compareFixedTime(
+  const passwordsAreEqual =
+   await compareFixedTime(
     password,
     password_hash,
     password_hash_salt
-   ))
-  ) {
+   )
+  console.log(
+   'passwordsAreEqual',
+   passwordsAreEqual
+  )
+  if (!passwordsAreEqual) {
    return { error: 'Invalid password' }
   }
  } else if (createAccount) {
-  if (1 > 0) {
-   return {
-    error:
-     'Account creation temporarily suspended',
-   }
-  }
   const password_hash_salt = createSalt()
   const password_hash = hash(
    password,
