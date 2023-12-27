@@ -10,6 +10,7 @@ import {
 } from '@starryui/theme'
 import { authGuard } from '../../components/authGuard'
 import { User } from '../../lib/auth'
+import { journalsList } from './journalsList'
 
 export function start(
  theme: StarryUITheme
@@ -37,12 +38,13 @@ export function start(
     const element =
      document.createElement('div')
     element.style.padding = 'var(--dimension4)'
-    element.textContent =
-     'Journals list will be displayed here'
+    const list = journalsList(theme)
+    element.appendChild(list.container)
     return {
      element,
      destroy() {
       element.remove()
+      list.destroy()
      },
     }
    })

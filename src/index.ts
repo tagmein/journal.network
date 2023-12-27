@@ -1,4 +1,5 @@
 import {
+ StarryUITheme,
  attachStyle,
  attachThemeVariables,
  useThemeDimensions,
@@ -6,23 +7,79 @@ import {
 import { themeMidnight } from '@starryui/theme-midnight'
 import { mainTray } from './main-tray'
 import { router } from './router'
+import { themeSandstone } from '@starryui/theme-sandstone'
+import { themeBrilliance } from '@starryui/theme-brilliance'
 
-const topTray = mainTray(
- () => route(),
- themeMidnight
-)
-const route = router(topTray)
+const attachedStyleSheets: (
+ | HTMLElement
+ | undefined
+)[] = []
 
-attachThemeVariables(
- 'body',
- themeMidnight.variables
+let hashChangeListener: undefined | (() => void)
+
+const themeNameStorageKey = 'theme'
+
+const storedThemeName = localStorage.getItem(
+ themeNameStorageKey
 )
-attachStyle(
+const allThemes = [
+ themeBrilliance,
  themeMidnight,
- 'body',
- themeMidnight.facets.body
-)
-useThemeDimensions.tiny()
+ themeSandstone,
+]
 
-route()
-addEventListener('hashchange', route)
+async function main(theme: StarryUITheme) {
+ const topTray = mainTray(
+  theme,
+  allThemes,
+  async (newTheme) => {
+   localStorage.setItem(
+    themeNameStorageKey,
+    newTheme.name
+   )
+   if (hashChangeListener) {
+    removeEventListener(
+     'hashchange',
+     hashChangeListener
+    )
+   }
+   await routerInstance.destroy()
+   topTray.destroy()
+   await main(newTheme)
+  }
+ )
+
+ document.body.appendChild(topTray.container)
+
+ attachedStyleSheets
+  .splice(0, Infinity)
+  .forEach((sheet) => sheet?.remove())
+
+ const routerInstance = router(topTray)
+
+ attachedStyleSheets.push(
+  attachThemeVariables('body', theme.variables)
+ )
+ attachedStyleSheets.push(
+  attachStyle(theme, 'body', theme.facets.body)
+ )
+ attachedStyleSheets.push(
+  useThemeDimensions.tiny()
+ )
+
+ await routerInstance.route()
+ hashChangeListener = routerInstance.route
+ addEventListener(
+  'hashchange',
+  routerInstance.route
+ )
+}
+
+const selectedTheme =
+ allThemes.find(
+  (x) => x.name === storedThemeName
+ ) ?? themeMidnight
+
+main(selectedTheme).catch((e) =>
+ console.error(e)
+)

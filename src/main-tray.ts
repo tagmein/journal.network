@@ -11,14 +11,9 @@ import { StarryUIPage } from '@starryui/page'
 import {
  StarryUITheme,
  applyTheme,
- attachStyle,
  attachThemeFacet,
  attachThemeVariables,
- useThemeDimensions,
 } from '@starryui/theme'
-import { themeBrilliance } from '@starryui/theme-brilliance'
-import { themeMidnight } from '@starryui/theme-midnight'
-import { themeSandstone } from '@starryui/theme-sandstone'
 import {
  withClick,
  withTextContent,
@@ -28,20 +23,10 @@ import {
  traySpacer,
 } from '@starryui/tray'
 
-attachThemeVariables(
- 'body',
- themeMidnight.variables
-)
-attachStyle(
- themeMidnight,
- 'body',
- themeMidnight.facets.body
-)
-useThemeDimensions.tiny()
-
 export interface MainTrayControl {
  container: HTMLElement
- activeTheme: StarryUITheme
+ destroy(): Promise<void>
+ theme: StarryUITheme
  withBreadcrumb(
   path: string,
   page: StarryUIPage,
@@ -53,8 +38,11 @@ export interface MainTrayControl {
 }
 
 export function mainTray(
- route: () => void,
- theme: StarryUITheme
+ theme: StarryUITheme,
+ allThemes: StarryUITheme[],
+ onChangeTheme: (
+  newTheme: StarryUITheme
+ ) => Promise<void>
 ): MainTrayControl {
  const themedButton = applyTheme(theme, button)
  const themedMenu = applyTheme(theme, menu)
@@ -66,11 +54,6 @@ export function mainTray(
    zIndex: '1',
   },
  })
- attachThemeVariables(
-  container,
-  themeMidnight.variables
- )
- document.body.appendChild(container)
 
  container.appendChild(
   themedButton.add(
@@ -80,33 +63,29 @@ export function mainTray(
  )
  const breadcrumbs = themedRow()
  container.appendChild(breadcrumbs)
- container.appendChild(
-  traySpacer(themeMidnight)
- )
+ container.appendChild(traySpacer(theme))
 
- const themeNameStorageKey = 'theme'
- const storedThemeName = localStorage.getItem(
-  themeNameStorageKey
+ const attachedStyleSheets: (
+  | HTMLElement
+  | undefined
+ )[] = []
+
+ attachedStyleSheets.push(
+  attachThemeVariables(
+   container,
+   theme.variables
+  )
  )
- let allThemes = [
-  themeBrilliance,
-  themeMidnight,
-  themeSandstone,
- ]
- let activeTheme =
-  allThemes.find(
-   (x) => x.name === storedThemeName
-  ) ?? themeMidnight
 
  const themeSwitcher =
   document.createElement('div')
 
  attachThemeFacet(
   themeSwitcher,
-  themeMidnight,
+  theme,
   'button'
  )
- themeSwitcher.textContent = activeTheme.name
+ themeSwitcher.textContent = theme.name
  attachMenu(
   themeSwitcher,
   themedMenu.add({
@@ -116,14 +95,7 @@ export function mainTray(
      (x) => x.name === selectedThemeName
     )
     if (selectedTheme) {
-     activeTheme = selectedTheme
-     themeSwitcher.textContent =
-      activeTheme.name
-     localStorage.setItem(
-      themeNameStorageKey,
-      activeTheme.name
-     )
-     route()
+     onChangeTheme(selectedTheme)
     }
    },
   })({
@@ -227,10 +199,18 @@ export function mainTray(
   return page
  }
 
+ async function destroy() {
+  attachedStyleSheets.forEach((sheet) =>
+   sheet?.remove()
+  )
+  container.remove()
+ }
+
  return {
   container,
-  get activeTheme() {
-   return activeTheme
+  destroy,
+  get theme() {
+   return theme
   },
   withBreadcrumb,
  }

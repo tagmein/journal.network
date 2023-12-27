@@ -8,23 +8,16 @@ export interface ModalOptions {
  onSubmit(): Promise<void>
 }
 
-function createOverlay(
- close: () => void
-) {
- const overlay =
-  document.createElement('div')
- overlay.style.backgroundColor =
-  '#80808080'
+function createOverlay(close: () => void) {
+ const overlay = document.createElement('div')
+ overlay.style.backgroundColor = '#80808080'
  overlay.style.position = 'fixed'
  overlay.style.top = '0'
  overlay.style.left = '0'
  overlay.style.right = '0'
  overlay.style.bottom = '0'
 
- overlay.addEventListener(
-  'click',
-  close
- )
+ overlay.addEventListener('click', close)
 
  return overlay
 }
@@ -38,17 +31,15 @@ export function openModal({
  }
  const overlay = createOverlay(close)
 
- const element =
-  document.createElement('form')
+ const element = document.createElement('form')
  element.tabIndex = 0
 
- element.addEventListener(
-  'click',
-  (e) => e.stopPropagation()
+ element.addEventListener('click', (e) =>
+  e.stopPropagation()
  )
 
  Object.assign(element.style, {
-  backgroundColor: 'var(--theme3)',
+  backgroundColor: 'var(--theme1)',
   border: '1px solid var(--theme4)',
   padding: 'var(--dimension3)',
   margin: '50vh auto',
@@ -56,10 +47,7 @@ export function openModal({
   transform: 'translateY(-50%)',
  })
 
- element.addEventListener(
-  'submit',
-  onSubmit
- )
+ element.addEventListener('submit', onSubmit)
 
  const modal = {
   element,

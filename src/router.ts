@@ -6,15 +6,36 @@ import { about } from './pages/about'
 import { home } from './pages/home'
 import { start } from './pages/start'
 
+export interface RouterControl {
+ destroy(): Promise<void>
+ route(): Promise<void>
+}
+
 export function router(
  topTray: MainTrayControl
-) {
+): RouterControl {
  let activePage: StarryUIPage | undefined
 
  const pageCache = new Map<
   string,
   StarryUIPage
  >()
+
+ async function destroy() {
+  if (activePage) {
+   activePage.element.setAttribute(
+    'data-starryui-reveal',
+    'hidden'
+   )
+   await activePage.onUnload?.(false)
+   await new Promise((r) =>
+    setTimeout(r, NORMAL_DELAY_MS)
+   )
+   document.body.removeChild(activePage.element)
+   await activePage.onUnload?.(true)
+   activePage = undefined
+  }
+ }
 
  function loadPage(
   path: string,
@@ -56,26 +77,14 @@ export function router(
  }
 
  async function route() {
-  if (activePage) {
-   activePage.element.setAttribute(
-    'data-starryui-reveal',
-    'hidden'
-   )
-   await activePage.onUnload?.(false)
-   await new Promise((r) =>
-    setTimeout(r, NORMAL_DELAY_MS)
-   )
-   document.body.removeChild(activePage.element)
-   await activePage.onUnload?.(true)
-   activePage = undefined
-  }
+  await destroy()
   if (
    location.hash.match(/#\/components\/[^\/+]/)
   ) {
    activePage = getPage(
     location.hash,
     'component',
-    topTray.activeTheme,
+    topTray.theme,
     location.hash.substring(13)
    )
   } else {
@@ -85,7 +94,7 @@ export function router(
      activePage = getPage(
       location.hash,
       'home',
-      topTray.activeTheme,
+      topTray.theme,
       ''
      )
      break
@@ -95,7 +104,7 @@ export function router(
      activePage = getPage(
       location.hash,
       location.hash.substring(2),
-      topTray.activeTheme,
+      topTray.theme,
       ''
      )
      break
@@ -124,5 +133,5 @@ export function router(
   }
  }
 
- return route
+ return { destroy, route }
 }

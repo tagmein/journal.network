@@ -4,21 +4,18 @@ import {
  applyThemeMultiple,
 } from '@starryui/theme'
 import { withTextContent } from '@starryui/traits'
-import {
- Modal,
- openModal,
-} from './openModal'
+import { Modal, openModal } from './openModal'
 
 // Create Modal
 export function createItemModal(
  theme: StarryUITheme,
  title: string,
- onSubmit: (
-  name: string
- ) => Promise<void>
+ onSubmit: (name: string) => Promise<void>
 ) {
- const [themedButton] =
-  applyThemeMultiple(theme, [button])
+ const [themedButton] = applyThemeMultiple(
+  theme,
+  [button]
+ )
 
  const nameInput = createNameInput()
 
@@ -40,13 +37,10 @@ export function createItemModal(
    'placeholder',
    'Enter name'
   )
-  nameInput.setAttribute(
-   'required',
-   'required'
-  )
+  nameInput.setAttribute('required', 'required')
 
   nameInput.style.backgroundColor =
-   'var(--theme5)'
+   'var(--theme0)'
   nameInput.style.border =
    '1px solid var(--theme8)'
   nameInput.style.marginBottom =
@@ -59,22 +53,17 @@ export function createItemModal(
 
  function createButtons() {
   // Existing button logic
-  const buttons =
-   document.createElement('div')
+  const buttons = document.createElement('div')
   buttons.style.display = 'flex'
-  buttons.style.gap =
-   'var(--dimension2)'
+  buttons.style.gap = 'var(--dimension2)'
 
   const cancel = themedButton.add(
    withTextContent('Cancel')
   )()
   cancel.setAttribute('type', 'reset')
-  cancel.addEventListener(
-   'click',
-   function () {
-    createModal.close()
-   }
-  )
+  cancel.addEventListener('click', function () {
+   createModal.close()
+  })
 
   const create = themedButton.add(
    withTextContent('Create')
@@ -87,8 +76,7 @@ export function createItemModal(
  }
 
  function createHeader(title: string) {
-  const header =
-   document.createElement('h3')
+  const header = document.createElement('h3')
   header.textContent = title
   header.style.marginTop = '0'
   header.style.marginBottom =

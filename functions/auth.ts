@@ -6,7 +6,7 @@ import { CloudflareWorker } from './lib/cloudflareTypes'
 import { createResponse } from './lib/createResponse'
 import { getKV } from './lib/getKV'
 
-interface Body {
+interface CreateAuthBody {
  username: string
  password: string
  'create-account': boolean
@@ -16,7 +16,8 @@ export const onRequestPost: CloudflareWorker =
  async function ({ env, request }) {
   try {
    const kv = await getKV(env)
-   const body: Body = await request.json()
+   const body: CreateAuthBody =
+    await request.json()
    const {
     access_token,
     expires_at,
