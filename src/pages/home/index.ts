@@ -60,7 +60,7 @@ export function home(
     style: {
      alignItems: 'center',
      flexGrow: '0',
-     gap: '20px',
+     gap: 'var(--dimension4)',
      minHeight: '128px',
      justifyContent: 'space-evenly',
      padding:
@@ -92,16 +92,16 @@ export function home(
    })
 
    function headerText(text: string) {
-    const h4 = document.createElement('h4')
-    h4.textContent = text
-    return h4
+    const h2 = document.createElement('h2')
+    h2.textContent = text
+    return h2
    }
 
    const entries = themedColumn({
     style: {
      alignItems: 'center',
      flexGrow: '0',
-     gap: '20px',
+     gap: 'var(--dimension4)',
      justifyContent: 'space-evenly',
      padding:
       'var(--dimension4) var(--dimension3)',
@@ -142,20 +142,6 @@ export function home(
     entries.appendChild(frame)
    }
    mainArea.appendChild(entries)
-
-   const quickLinks = themedRow({
-    style: {
-     alignItems: 'center',
-     borderBottom: '1px solid var(--theme2)',
-     flexGrow: '0',
-     gap: '20px',
-     justifyContent: 'space-evenly',
-     padding:
-      '0 var(--dimension4) var(--dimension3) ',
-    },
-    themeFacets: ['document', 'opaque'],
-   })
-
    container.appendChild(mainArea)
 
    config?.startUpTasks?.initial?.push?.(
