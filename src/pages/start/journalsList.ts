@@ -1,16 +1,15 @@
+import { button } from '@starryui/button'
 import { frame } from '@starryui/frame'
 import {
  StarryUITheme,
- applyTheme,
  applyThemeMultiple,
 } from '@starryui/theme'
-import { journals } from '../../lib/journals'
-import { button } from '@starryui/button'
 import {
  withClick,
  withTextContent,
 } from '@starryui/traits'
 import { createItemModal } from '../../components/createItemModal'
+import { journals } from '../../lib/journals'
 
 export interface JournalsListControl {
  container: HTMLDivElement
@@ -36,11 +35,17 @@ export function journalsList(
    container.appendChild(emptyMessage)
   }
   myJournals.map((journal) => {
-   const journalFrame = themedFrame()
+   const journalFrame = themedFrame({
+    tagName: 'a',
+    href: `/#/journal/${encodeURIComponent(
+     journal.user
+    )}/${journal.name}`,
+   })
+   journalFrame.style.display = 'block'
    journalFrame.style.padding =
-    '0 var(--dimension3)'
+    'var(--dimension3) var(--dimension4)'
    journalFrame.style.marginBottom =
-    'var(--dimension3)'
+    'var(--dimension4)'
    const journalTitle =
     document.createElement('h2')
    journalTitle.textContent = journal.name
@@ -49,7 +54,12 @@ export function journalsList(
    journalDate.textContent = `Created ${new Date(
     journal.createdAt
    ).toLocaleString()}`
+   const journalUser =
+    document.createElement('p')
+   journalUser.style.float = 'right'
+   journalUser.textContent = `Author: ${journal.user}`
    journalFrame.append(
+    journalUser,
     journalTitle,
     journalDate
    )

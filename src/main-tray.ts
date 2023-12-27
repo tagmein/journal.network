@@ -127,7 +127,13 @@ export function mainTray(
     }
    }),
    withTextContent('⛶')
-  )()
+  )({
+   style: {
+    lineHeight: '16px',
+    minWidth: '29px',
+    width: '29px',
+   },
+  })
  )
 
  function withBreadcrumb(

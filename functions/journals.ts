@@ -14,12 +14,13 @@ interface CreateJournalBody {
 interface Journal {
  createdAt: string
  name: string
+ user: string
 }
 
 async function getJournalsList(
  user: User,
  kv: CivilMemoryKV
-) {
+): Promise<Journal[]> {
  try {
   const journalsList = await kv.get(
    `user.journals:${encodeURIComponent(
@@ -76,6 +77,7 @@ export const onRequestPost: CloudflareWorker =
    const journal: Journal = {
     createdAt: new Date().toISOString(),
     name: body.name,
+    user: user.username,
    }
    const journals = await getJournalsList(
     user,
@@ -133,5 +135,15 @@ export const onRequestGet: CloudflareWorker =
    user,
    kv
   )
+  if (journals.length && !journals[0].user) {
+   await setJournalsList(
+    user,
+    kv,
+    journals.map((j: Journal) => {
+     j.user = user.username
+     return j as Journal
+    })
+   )
+  }
   return createResponse({ journals })
  }

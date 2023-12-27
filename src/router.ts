@@ -5,6 +5,7 @@ import { MainTrayControl } from './main-tray'
 import { about } from './pages/about'
 import { home } from './pages/home'
 import { start } from './pages/start'
+import { journal } from './pages/journal'
 
 export interface RouterControl {
  destroy(): Promise<void>
@@ -78,38 +79,46 @@ export function router(
 
  async function route() {
   await destroy()
-  if (
-   location.hash.match(/#\/components\/[^\/+]/)
-  ) {
-   activePage = getPage(
-    location.hash,
-    'component',
-    topTray.theme,
-    location.hash.substring(13)
-   )
-  } else {
-   switch (location.hash) {
-    case '':
-    case '#':
-     activePage = getPage(
-      location.hash,
-      'home',
-      topTray.theme,
-      ''
-     )
-     break
-    case '#/about':
-    case '#/directory':
-    case '#/start':
-     activePage = getPage(
-      location.hash,
-      location.hash.substring(2),
-      topTray.theme,
-      ''
-     )
-     break
-   }
+
+  switch (location.hash) {
+   case '':
+   case '#':
+    activePage = getPage(
+     location.hash,
+     'home',
+     topTray.theme,
+     ''
+    )
+    break
+   case '#/about':
+   case '#/directory':
+   case '#/start':
+    activePage = getPage(
+     location.hash,
+     location.hash.substring(2),
+     topTray.theme,
+     ''
+    )
+    break
   }
+
+  if (location.hash.startsWith('#/journal/')) {
+   const [_0, _1, userName, journalName] =
+    location.hash
+     .split('/')
+     .map(decodeURIComponent)
+   console.log({ userName, journalName })
+   activePage = topTray.withBreadcrumb(
+    location.hash,
+    journal(
+     topTray.theme,
+     userName,
+     journalName
+    ),
+    [{ title: 'Start', url: '/#/start' }]
+   )
+  }
+
   if (activePage) {
    // routing occurred
    await activePage.onLoad?.(false)

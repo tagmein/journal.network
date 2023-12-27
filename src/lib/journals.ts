@@ -3,6 +3,7 @@ import { getAccessToken } from './auth'
 export interface Journal {
  createdAt: string
  name: string
+ user: string
 }
 
 export const journals = {
