@@ -291,7 +291,6 @@ export function authGuard(
    style: {
     backgroundColor: 'var(--theme2)',
     color: 'var(--theme8)',
-    lineHeight: '20px',
    },
   })
 
@@ -299,8 +298,9 @@ export function authGuard(
 
   Object.assign(message.style, {
    fontSize: '14px',
+   lineHeight: '24px',
    padding:
-    'var(--dimension2) var(--dimension3)',
+    'var(--dimension2) var(--dimension3) 0',
   })
 
   const countdown =
@@ -313,8 +313,9 @@ export function authGuard(
 
   Object.assign(countdown.style, {
    fontSize: '14px',
+   lineHeight: '24px',
    padding:
-    'var(--dimension2) var(--dimension3)',
+    'var(--dimension2) var(--dimension3) 0',
   })
 
   let countdownTimeout: NodeJS.Timeout

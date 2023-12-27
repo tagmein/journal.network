@@ -1,7 +1,10 @@
 import {
+ SessionData,
+ User,
  createAuth,
  getUserSession,
 } from './lib/auth'
+import { authenticatedRequest } from './lib/authenticatedRequest'
 import { CloudflareWorker } from './lib/cloudflareTypes'
 import { createResponse } from './lib/createResponse'
 import { getKV } from './lib/getKV'
@@ -49,34 +52,10 @@ export const onRequestPost: CloudflareWorker =
  }
 
 export const onRequestGet: CloudflareWorker =
- async ({ env, request }) => {
-  const access_token = request.headers.get(
-   'Authorization'
-  )
-
-  if (!access_token) {
-   return createResponse(
-    { error: 'unauthorized' },
-    { status: 401 }
-   )
-  }
-
-  const kv = await getKV(env)
-
-  const { user, session } =
-   await getUserSession(kv, access_token)
-
-  if (!user || !session) {
-   return createResponse(
-    { error: 'unauthorized' },
-    { status: 401 }
-   )
-  }
-
+ authenticatedRequest(async (user, session) => {
   const { expires_at } = session
-
   return createResponse({
    user,
    expires_at,
   })
- }
+ })

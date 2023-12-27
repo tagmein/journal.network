@@ -8,6 +8,8 @@ import {
  applyTheme,
  attachThemeVariables,
 } from '@starryui/theme'
+import { authGuard } from '../../components/authGuard'
+import { User } from '../../lib/auth'
 
 export function journal(
  theme: StarryUITheme,
@@ -23,10 +25,6 @@ export function journal(
     column
    )
    const mainArea = themedColumn({
-    style: {
-     padding:
-      'var(--dimension3) var(--dimension4)',
-    },
     themeFacets: ['document', 'opaque'],
    })
    container.appendChild(mainArea)
@@ -37,17 +35,20 @@ export function journal(
     theme.variables
    )
 
-   mainArea.textContent = 'loading...' // todo loading component
-
-   async function load() {
-    mainArea.textContent =
-     'details about the journal: ' +
-     userName +
-     ' - ' +
-     journalName
-   }
-
-   load().catch((e) => console.warn(e))
+   authGuard(mainArea, theme, (user: User) => {
+    const element =
+     document.createElement('div')
+    element.style.padding = 'var(--dimension4)'
+    const list = document.createElement('div')
+    list.textContent = `${journalName} by user ${userName}`
+    element.appendChild(list)
+    return {
+     element,
+     destroy() {
+      element.remove()
+     },
+    }
+   })
 
    config?.startUpTasks?.initial?.push?.(
     function () {
