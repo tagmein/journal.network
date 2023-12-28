@@ -298,7 +298,7 @@ export function authGuard(
 
   Object.assign(message.style, {
    fontSize: '14px',
-   lineHeight: '24px',
+   lineHeight: '20px',
    padding:
     'var(--dimension2) var(--dimension3) 0',
   })
@@ -313,7 +313,7 @@ export function authGuard(
 
   Object.assign(countdown.style, {
    fontSize: '14px',
-   lineHeight: '24px',
+   lineHeight: '20px',
    padding:
     'var(--dimension2) var(--dimension3) 0',
   })

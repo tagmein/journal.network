@@ -48,12 +48,18 @@ export function journalsList(
     'var(--dimension4)'
    const journalTitle =
     document.createElement('h2')
+   Object.assign(journalTitle.style, {
+    marginTop: '0'
+   })
    journalTitle.textContent = journal.name
    const journalDate =
     document.createElement('p')
    journalDate.textContent = `Created ${new Date(
     journal.createdAt
    ).toLocaleString()}`
+   Object.assign(journalDate.style, {
+    marginBottom: '0'
+   })
    const journalUser =
     document.createElement('p')
    journalUser.style.float = 'right'
@@ -63,6 +69,9 @@ export function journalsList(
     journalTitle,
     journalDate
    )
+   Object.assign(journalUser.style, {
+    marginTop: '0'
+   })
    container.appendChild(journalFrame)
   })
   const newJournalButton = themedButton.add(

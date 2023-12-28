@@ -94,6 +94,9 @@ export function home(
    function headerText(text: string) {
     const h2 = document.createElement('h2')
     h2.textContent = text
+    Object.assign(h2.style, {
+     marginTop: '0',
+    })
     return h2
    }
 
@@ -121,8 +124,8 @@ export function home(
      href: '/#/directory',
     },
     {
-     name: 'Write',
-     description: 'Start your own journal',
+     name: 'Start',
+     description: 'Publish your own journal',
      href: '/#/start',
     },
    ]) {
@@ -138,6 +141,9 @@ export function home(
     frame.appendChild(headerText(name))
     const descPara = document.createElement('p')
     descPara.textContent = description
+    Object.assign(descPara.style, {
+     marginBottom: '0',
+    })
     frame.appendChild(descPara)
     entries.appendChild(frame)
    }

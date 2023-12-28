@@ -1,8 +1,8 @@
 import { PagesFunction } from '@cloudflare/workers-types'
 
-interface Env {
+export interface JournalNetworkEnv {
  JOURNAL_NETWORK_DATA_KV: KVNamespace
 }
 
 export type CloudflareWorker =
- PagesFunction<Env>
+ PagesFunction<JournalNetworkEnv>
