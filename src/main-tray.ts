@@ -79,6 +79,10 @@ export function mainTray(
 
  const themeSwitcher =
   document.createElement('div')
+ themeSwitcher.setAttribute(
+  'title',
+  'Select theme'
+ )
 
  attachThemeFacet(
   themeSwitcher,
